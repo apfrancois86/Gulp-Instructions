@@ -21,7 +21,8 @@ Instructions to create Asset Pipeline
 18. bower install bootstrap --save
 19. npm install bower-files --save-dev
 20. npm install browser-sync --save-dev
-21. add data below to gulpfile.js:
+21. npm install gulp-sass gulp-sourcemaps --save-dev
+22. add data below to gulpfile.js:
 
 var gulp = require('gulp');
 var concat = require('gulp-concat');
@@ -43,7 +44,8 @@ var lib = require('bower-files')({
   }
 });
 var browserSync = require('browser-sync').create();
-
+var sass = require('gulp-sass');
+var sourcemaps = require('gulp-sourcemaps');
 var buildProduction = utilities.env.production;
 
 gulp.task('concatInterface', function() {
@@ -76,6 +78,7 @@ gulp.task("build", ['clean'], function(){
     gulp.start('jsBrowserify');
   }
   gulp.start('bower');
+  gulp.start('cssBuild');
 });
 
 gulp.task('jshint', function(){
@@ -99,6 +102,15 @@ gulp.task('bowerCSS', function () {
 
 gulp.task('bower', ['bowerJS', 'bowerCSS']);
 
+gulp.task('cssBuild', function() {
+  return gulp.src(['scss/*.scss'])
+    .pipe(sourcemaps.init()) 
+    .pipe(sass())
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest('./build/css'));
+    .pipe(browserSync.stream());
+});
+
 gulp.task('serve', function() {
   browserSync.init({
     server: {
@@ -109,6 +121,7 @@ gulp.task('serve', function() {
   gulp.watch(['js/*.js'], ['jsBuild']);
   gulp.watch(['bower.json'], ['bowerBuild']);
   gulp.watch(['*.html'], ['htmlBuild']);
+  gulp.watch(["scss/*.scss"], ['cssBuild']);
 });
 
 gulp.task('jsBuild', ['jsBrowserify', 'jshint'], function(){
