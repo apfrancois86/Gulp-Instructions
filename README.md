@@ -6,7 +6,7 @@ Instructions to create Asset Pipeline
 3. npm init 
 4. npm install gulp --save-dev
 5. npm install browserify --save-dev
-6. npm install vinyl-source-strean --save-dev
+6. npm install vinyl-source-stream --save-dev
 7. npm isntall gulp-concat --save-dev
 8. npm install gulp-uglify --save-dev
 9. gulp install gulp-util --save-dev
